@@ -2,6 +2,27 @@
   <div class="dashboard">
     <h1 class="subheading grey--text">Dashboard</h1>
     <v-container class="my-5">
+      <v-layout row wrap class="mb-3">
+        <v-tooltip top>
+          <template v-slot:activator="{ on }">
+            <v-btn dark v-on="on" color="grey" small flat @click="sortBy('title')">
+              <v-icon small left>folder</v-icon>
+              <span class="text-lowercase">by Folder</span>
+            </v-btn>
+          </template>
+          <span class="caption text-lowercase">Sort by Project name</span>
+        </v-tooltip>
+
+        <v-tooltip top>
+          <template v-slot:activator="{ on }">
+            <v-btn dark v-on="on" color="grey" small flat @click="sortBy('person')">
+              <v-icon small left>person</v-icon>
+              <span class="text-lowercase">by Person</span>
+            </v-btn>
+          </template>
+          <span class="caption text-lowercase">Sort by Person name</span>
+        </v-tooltip>
+      </v-layout>
       <v-card flat v-for="project in projects" :key="project.title">
         <v-layout row wrap :class="`pa-3 project ${project.status}`">
           <v-flex xs12 md6>
@@ -57,7 +78,7 @@ export default {
             "Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt consequuntur eos eligendi illum minima adipisci deleniti, dicta mollitia enim explicabo fugiat quidem ducimus praesentium voluptates porro molestias non sequi animi!"
         },
         {
-          title: "Create a community forum",
+          title: "Analize a community forum",
           person: "Gouken",
           due: "20th Oct 2018",
           status: "overdue",
@@ -66,6 +87,11 @@ export default {
         }
       ]
     };
+  },
+  methods: {
+    sortBy(prop) {
+      this.projects.sort((a, b) => (a[prop] < b[prop] ? -1 : 1));
+    }
   }
 };
 </script>

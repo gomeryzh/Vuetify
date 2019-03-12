@@ -1,0 +1,68 @@
+<template>
+  <v-dialog width="600">
+    <template v-slot:activator="{ on }">
+      <v-btn class="success" dark v-on="on">Add new project</v-btn>
+    </template>
+
+    <v-card>
+      <v-card-title class="headline grey lighten-2" primary-title>Add new project</v-card-title>
+
+      <v-card-text>
+        <v-form class="px-3">
+          <v-text-field name="Title" label="Title" prepend-icon="folder" v-model="title"></v-text-field>
+          <v-textarea name="Info" label="Info" prepend-icon="edit" v-model="projectInfo"></v-textarea>
+
+          <v-menu full-width max-width="290">
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                :value="formattedDate"
+                clearable
+                label="Due date"
+                prepend-icon="date_range"
+                readonly
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker v-model="date"></v-date-picker>
+          </v-menu>
+
+          <v-btn flat class="mb-3 mx-0 success" @click="formSubmit">Add Project</v-btn>
+        </v-form>
+      </v-card-text>
+
+      <v-divider></v-divider>
+    </v-card>
+  </v-dialog>
+</template>
+
+<script>
+import format from "date-fns/format";
+
+export default {
+  data() {
+    return {
+      title: "",
+      projectInfo: "",
+      date: null
+    };
+  },
+  methods: {
+    formSubmit() {
+      console.log(
+        "Project title:",
+        this.title,
+        ", Project info:",
+        this.projectInfo
+      );
+    }
+  },
+  computed: {
+    formattedDate() {
+      return this.date ? format(this.date, "Do MMM YYYY") : "";
+    }
+  }
+};
+</script>
+
+<style scoped>
+</style>
