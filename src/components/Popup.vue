@@ -1,5 +1,5 @@
 <template>
-  <v-dialog width="600">
+  <v-dialog width="600" v-model="dialog">
     <template v-slot:activator="{ on }">
       <v-btn class="success" dark v-on="on">Add new project</v-btn>
     </template>
@@ -39,7 +39,7 @@
             <v-date-picker v-model="date"></v-date-picker>
           </v-menu>
 
-          <v-btn flat class="mb-3 mx-0 success" @click="formSubmit">Add Project</v-btn>
+          <v-btn flat class="mb-3 mx-0 success" @click="formSubmit" :loading="loading">Add Project</v-btn>
         </v-form>
       </v-card-text>
 
@@ -50,6 +50,7 @@
 
 <script>
 import format from "date-fns/format";
+import db from "../fb.js";
 
 export default {
   data() {
@@ -57,13 +58,31 @@ export default {
       title: "",
       projectInfo: "",
       date: null,
-      inputRules: [v => v.length > 3 || "Minimum length is 4 symbols"]
+      inputRules: [v => v.length > 3 || "Minimum length is 4 symbols"],
+      loading: false,
+      dialog: false
     };
   },
   methods: {
     formSubmit() {
       if (!this.$refs.form.validate()) return;
-      console.log(this.title, this.projectInfo);
+      this.loading = true;
+      const project = {
+        title: this.title,
+        content: this.projectInfo,
+        due: format(this.date, "Do MMM YYYY"),
+        person: "The Net Ninja",
+        status: "ongoing"
+      };
+
+      db.collection("projects")
+        .add(project)
+        .then(res => {
+          console.log("added to DB:", res);
+          this.loading = false;
+          this.dialog = false;
+          this.$emit("projectAdded");
+        });
     }
   },
   computed: {
