@@ -8,9 +8,21 @@
       <v-card-title class="headline grey lighten-2" primary-title>Add new project</v-card-title>
 
       <v-card-text>
-        <v-form class="px-3">
-          <v-text-field name="Title" label="Title" prepend-icon="folder" v-model="title"></v-text-field>
-          <v-textarea name="Info" label="Info" prepend-icon="edit" v-model="projectInfo"></v-textarea>
+        <v-form class="px-3" ref="form">
+          <v-text-field
+            name="Title"
+            label="Title"
+            :rules="inputRules"
+            prepend-icon="folder"
+            v-model="title"
+          ></v-text-field>
+          <v-textarea
+            name="Info"
+            label="Info"
+            :rules="inputRules"
+            prepend-icon="edit"
+            v-model="projectInfo"
+          ></v-textarea>
 
           <v-menu full-width max-width="290">
             <template v-slot:activator="{ on }">
@@ -21,6 +33,7 @@
                 prepend-icon="date_range"
                 readonly
                 v-on="on"
+                :rules="inputRules"
               ></v-text-field>
             </template>
             <v-date-picker v-model="date"></v-date-picker>
@@ -43,17 +56,14 @@ export default {
     return {
       title: "",
       projectInfo: "",
-      date: null
+      date: null,
+      inputRules: [v => v.length > 3 || "Minimum length is 4 symbols"]
     };
   },
   methods: {
     formSubmit() {
-      console.log(
-        "Project title:",
-        this.title,
-        ", Project info:",
-        this.projectInfo
-      );
+      if (!this.$refs.form.validate()) return;
+      console.log(this.title, this.projectInfo);
     }
   },
   computed: {
